@@ -26,19 +26,20 @@ class TextFormatter {
   public void print(String aText) {
     String formattedString = "";
 
-    for (int currentPosition = 0; currentPosition < aText.length(); currentPosition++) {
-      // Handle linebreak
-      if (currentPosition % 30 == 0) {
+    Scanner sc = new Scanner(aText);
+    int currentLineLength = 0;
 
-        // Split word if necessary
-        if (aText.charAt(currentPosition) != ' ') {
-          formattedString += "-";
-        }
-
-        formattedString += "\n";
+    while (sc.hasNext()) {
+      String word = sc.next();
+      if (currentLineLength + word.length() >= maxLineLength) {
+        formattedString += "  -" + currentLineLength + "\n";
+        currentLineLength = 0;
       }
-      formattedString += aText.charAt(currentPosition);
+
+      formattedString += word +  " ";
+      currentLineLength += word.length() + 1; // Plus one for added space after every word
     }
+    sc.close();
 
     System.out.println(formattedString);
   }
