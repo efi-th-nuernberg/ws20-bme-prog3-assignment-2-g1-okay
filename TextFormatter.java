@@ -88,21 +88,21 @@ class TextFormatter {
 
   // Adds spaces in between words until it has maxLineLength
   private String makeJustified(String line) {
-    String[] words= line.trim().split("\\b");
+    String[] words= line.split(" ");
 
     int lineLength = 0;
-    for(String str : arr) length += str.lineLength();
-    
-    while(lineLength < maxLineLength)
-    // Uneven indexes should always be whitespaces here
-    // Might put the second condition inside the loop later...but also might not...
-    for(int i = 1; i < words.length && lineLength < maxLineLength; i+=2){
-      words[i] += " ";
-      lineLength++;
+    for(String str : words) lineLength += str.length();
+
+    while(lineLength < maxLineLength) { 
+      for(int i = 0; (i < words.length-1) && (lineLength < maxLineLength); i++){
+        words[i] = words[i].concat(" ");
+        lineLength++;
+      }
     }
 
-    // Hope toString does what I want here, if this is still here leter, it does :3
-    return words.toString();
+    String temp = "";
+    for(String str : words) temp = temp.concat(str);
+    return temp;
   }
 
   // Print out the given ArrayList line by line
