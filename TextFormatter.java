@@ -1,4 +1,3 @@
-import java.io.BufferedReader;
 import java.util.ArrayList;
 
 class TextFormatter {
@@ -14,8 +13,8 @@ class TextFormatter {
 
   public static void main(String[] args) {
     TextFormatter formatter = new TextFormatter(30);
-    
-    if(args.length == 0){
+
+    if (args.length == 0) {
       formatter.printLeft(text);
     } else {
       switch (args[0]) {
@@ -25,11 +24,14 @@ class TextFormatter {
       case "right":
         formatter.printRight(text);
         break;
+      case "block":
+        formatter.printBlock(text);
+        break;
       default:
         System.out.println("Faulty command line parameter.");
         break;
       }
-    } 
+    }
 
   }
 
@@ -40,60 +42,67 @@ class TextFormatter {
 
   // Ausgabe
   public void printLeft(String aText) {
-    String formattedString = "";
-
-    String[] words = aText.split("\\b");
-    int currentLineLength = 0;
-
-    for(int i = 0; i < words.length; i++) {
-      String word = words[i];
-      if (currentLineLength + word.length() > maxLineLength) {
-        formattedString += "\n";
-        currentLineLength = 0;
-      }
-
-      // Don't put whitespaces at the front of a new line
-      if(!(currentLineLength == 0 && word.trim().length() == 0)) {
-        formattedString += word;
-        currentLineLength += word.length(); 
-      }
-    }
-
-    // Finally print the formatted text
-    System.out.println(formattedString);
+    ArrayList<String> lines = splitIntoLines(aText);
+    printLines(lines);
   }
 
   public void printRight(String aText) {
     ArrayList<String> lines = new ArrayList<String>();
-    String currentLine = "";
-    String[] words = aText.split("\\b");
-
-    for(int i = 0; i < words.length; i++) {
-      String word = words[i];
-      if (currentLine.length() + word.length() > maxLineLength) {
-        // Handle linebreak
-        currentLine = fillWithSpaces(currentLine.trim());
-        lines.add(currentLine);
-
-        currentLine = "";
-      }
-
-      currentLine += word;
-      
-    }
-    // Don't forget the final line
-    currentLine = fillWithSpaces(currentLine);
-    lines.add(currentLine);
-
+    for(String line : splitIntoLines(aText)) lines.add(makeRightJustified(line));
     printLines(lines);
   }
 
-  // Adds spaces in front of String so all lines have the same length
-  private String fillWithSpaces(String line) {
-    while(line.length() < 30) {
+  public void printBlock(String aText) {
+    ArrayList<String> lines = new ArrayList<String>();
+    for(String line : splitIntoLines(aText)) lines.add(makeJustified(line));
+    printLines(lines);
+  }
+
+  private ArrayList<String> splitIntoLines(String aText) {
+    ArrayList<String> lines = new ArrayList<String>();
+    String currentLine = "";
+    String[] words = aText.split("\\b");
+
+    for (int i = 0; i < words.length; i++) {
+      String word = words[i];
+      if (currentLine.length() + word.length() > maxLineLength) {
+        // Handle linebreak
+        lines.add(currentLine.trim());
+        currentLine = "";
+      }
+      currentLine += word;
+    }
+    // Don't forget the final line
+    lines.add(currentLine);
+
+    return lines;
+  }
+
+  // Adds spaces in front of String until it has maxLineLength
+  private String makeRightJustified(String line) {
+    while (line.length() < maxLineLength) {
       line = " " + line;
     }
     return line;
+  }
+
+  // Adds spaces in between words until it has maxLineLength
+  private String makeJustified(String line) {
+    String[] words= line.trim().split("\\b");
+
+    int lineLength = 0;
+    for(String str : arr) length += str.lineLength();
+    
+    while(lineLength < maxLineLength)
+    // Uneven indexes should always be whitespaces here
+    // Might put the second condition inside the loop later...but also might not...
+    for(int i = 1; i < words.length && lineLength < maxLineLength; i+=2){
+      words[i] += " ";
+      lineLength++;
+    }
+
+    // Hope toString does what I want here, if this is still here leter, it does :3
+    return words.toString();
   }
 
   // Print out the given ArrayList line by line
