@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class TextFormatter {
   private final int maxLineLength;
@@ -43,61 +42,58 @@ class TextFormatter {
   public void printLeft(String aText) {
     String formattedString = "";
 
-    Scanner sc = new Scanner(aText);
+    String[] words = aText.split("\\b");
     int currentLineLength = 0;
 
-    while (sc.hasNext()) {
-      String word = sc.next();
-      if (currentLineLength + word.length() >= maxLineLength) {
+    for(int i = 0; i < words.length; i++) {
+      String word = words[i];
+      if (currentLineLength + word.length() > maxLineLength) {
         formattedString += "\n";
         currentLineLength = 0;
       }
 
-      formattedString += word + " ";
-      currentLineLength += word.length() + 1; // plus one for added space
+      // Don't put whitespaces at the front of a new line
+      if(!(currentLineLength == 0 && word.trim().length() == 0)) {
+        formattedString += word;
+        currentLineLength += word.length(); 
+      }
     }
-    sc.close();
 
+    // Finally print the formatted text
     System.out.println(formattedString);
   }
 
   public void printRight(String aText) {
     ArrayList<String> lines = new ArrayList<String>();
     String currentLine = "";
+    String[] words = aText.split("\\b");
 
-    Scanner sc = new Scanner(aText);
-    int currentLineLength = 0;
-
-    while (sc.hasNext()) {
-      String word = sc.next();
-      if (currentLineLength + word.length() >= maxLineLength) {
+    for(int i = 0; i < words.length; i++) {
+      String word = words[i];
+      if (currentLine.length() + word.length() > maxLineLength) {
         // Handle linebreak
-        currentLine = fillWithSpaces(currentLine);
+        currentLine = fillWithSpaces(currentLine.trim());
         lines.add(currentLine);
 
         currentLine = "";
-        currentLineLength = 0;
       }
 
-      currentLine += " " + word;
-      currentLineLength += word.length() + 1; // Plus one for added space after every word
+      currentLine += word;
+      
     }
     // Don't forget the final line
     currentLine = fillWithSpaces(currentLine);
     lines.add(currentLine);
 
-    sc.close();
-
     printLines(lines);
   }
 
   // Adds spaces in front of String so all lines have the same length
-  private String fillWithSpaces(String s) {
-    String temp = "";
-    for (int i = 0; i < maxLineLength - s.length(); i++)
-      temp += " ";
-    temp += s;
-    return temp;
+  private String fillWithSpaces(String line) {
+    while(line.length() < 30) {
+      line = " " + line;
+    }
+    return line;
   }
 
   // Print out the given ArrayList line by line
